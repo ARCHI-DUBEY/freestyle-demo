@@ -3,21 +3,10 @@ pipeline {
 
     stages {
 
-        stage('Build') {
+        stage('Docker Test') {
             steps {
-                bat 'echo BUILDING APPLICATION'
-            }
-        }
-
-        stage('Test') {
-            steps {
-                bat 'echo TESTING APPLICATION'
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                bat 'echo DEPLOYING APPLICATION'
+                bat 'docker --version'
+                bat 'docker ps'
             }
         }
 

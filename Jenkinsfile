@@ -1,19 +1,37 @@
 pipeline {
     agent any
 
+    environment {
+        IMAGE_NAME = "archi2402/freestyle-demo:v1"
+    }
+
     stages {
 
-        stage('Build Docker Image') {
+        stage('Build Image') {
             steps {
-                bat 'docker build -t freestyle-demo:v1 .'
+                bat 'docker build -t %IMAGE_NAME% .'
             }
         }
 
-        stage('Show Images') {
+        stage('Docker Login') {
             steps {
-                bat 'docker images'
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-creds',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+
+                    bat '''
+                    docker login -u %DOCKER_USER% -p %DOCKER_PASS%
+                    '''
+                }
             }
         }
 
+        stage('Push Image') {
+            steps {
+                bat 'docker push %IMAGE_NAME%'
+            }
+        }
     }
 }
